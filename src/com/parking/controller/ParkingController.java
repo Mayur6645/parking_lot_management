@@ -1,6 +1,5 @@
 package com.parking.controller;
 
-import com.parking.model.Car;
 import com.parking.service.ParkingService;
 
 import java.util.Scanner;

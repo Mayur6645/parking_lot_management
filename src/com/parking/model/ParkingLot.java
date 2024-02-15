@@ -1,9 +1,6 @@
 package com.parking.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ParkingLot {
     private final int capacity;
@@ -11,17 +8,16 @@ public class ParkingLot {
 
     public ParkingLot(int capacity) {
         this.capacity = capacity;
-        parkingSlots = new HashMap<>();
+        this.parkingSlots = new HashMap<>();
     }
 
     public int park(Car car) {
-        for (int i = 1; i <= capacity; i++) {
-            if (!parkingSlots.containsKey(i)) {
-                parkingSlots.put(i, car);
-                return i;
-            }
+        if (isFull()) {
+            return -1; // Parking lot is full
         }
-        return -1; // Parking lot is full
+        int slotNumber = getNextAvailableSlot();
+        parkingSlots.put(slotNumber, car);
+        return slotNumber;
     }
 
     public boolean leave(int slotNumber) {
@@ -34,8 +30,10 @@ public class ParkingLot {
 
     public List<String> getStatus() {
         List<String> status = new ArrayList<>();
+        status.add("Slot No.    Registration No    Colour");
         for (Map.Entry<Integer, Car> entry : parkingSlots.entrySet()) {
-            status.add(String.format("%-12d%-19s%s", entry.getKey(), entry.getValue().getRegistrationNumber(), entry.getValue().getColor()));
+            Car car = entry.getValue();
+            status.add(String.format("%-12d%-19s%s", entry.getKey(), car.getRegistrationNumber(), car.getColor()));
         }
         return status;
     }
@@ -67,5 +65,18 @@ public class ParkingLot {
             }
         }
         return slotNumbers;
+    }
+
+    private boolean isFull() {
+        return parkingSlots.size() >= capacity;
+    }
+
+    private int getNextAvailableSlot() {
+        for (int i = 1; i <= capacity; i++) {
+            if (!parkingSlots.containsKey(i)) {
+                return i;
+            }
+        }
+        return -1; // No available slots
     }
 }
